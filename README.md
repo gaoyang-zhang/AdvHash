@@ -34,7 +34,7 @@ In this paper, we propose AdvHash, the first targeted mismatch attack on deep ha
 - data_list.py : load images data from ```database.txt```, ```train.txt```and ```test.txt```.
 - patch_utils.py : some functions for patch process.
 - pre_process.py : data pre-process for images.
-- tools.py: necessary tools for training model and attack model.
+- tools.py: necessary tools for training model and attacking model.
 
 ## Train 
 
