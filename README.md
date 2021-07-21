@@ -56,7 +56,7 @@ The ```xxx.txt ``` files in each subdirectory of ``` data ``` denote the image p
 
 
 
-Please refer [DeepHash-PyTorch](https://github.com/swuxyj/DeepHash-pytorch) for more training details such as datasets downloads.
+Thanks for the great implementation [DeepHash-PyTorch](https://github.com/swuxyj/DeepHash-pytorch), visit it more training details.
 
 ## Calculate the anchor codes
 
