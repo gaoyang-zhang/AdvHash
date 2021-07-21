@@ -18,7 +18,7 @@ from utils.tools import CalcTopMap
 
 
 def target_adv_loss(batch_output, real_output, target_hash):
-    weights = torch.where((real_output - target_hash).absolute() < 0.3, 0, 1)
+    weights = torch.where((real_output - target_hash).absolute() < 0.1, 0, 1)
     k = weights.sum()
     if k == 0:
         return - float('inf')
@@ -115,13 +115,15 @@ def get_factor(product):
     return 0.01
 
 
-def grad_aggregation(patch_grads, all_product):
+def grad_aggregation(patch_grads, all_product, threshold, hashbit):
     # hall_product)
     aggregated_grad = torch.zeros_like(patch_grads[0])
     hamdiss = torch.zeros_like(all_product) + abs(min(all_product))+ 2
     # hamdiss = torch.zeros_like(all_product) + args['hash_bit']
     for i in range(patch_grads.shape[0]):
-        hamdiss[i] =  hamdiss[i] + all_product[i]
+        hamdiss[i] =  hamdiss[i] + all_product[i] 
+        if all_product[i] > threshold:
+            hamdiss[i] -= hashbit/4
         aggregated_grad += ( hamdiss[i] * patch_grads[i])
     return aggregated_grad / hamdiss.sum()
 
@@ -140,7 +142,7 @@ def cal_map(args, per_codes, attack_labels):
     return mAP
 
 
-def batch_patch_attack(images, applied_patch, mask, target_hash, model, product_threshold, alpha=0.01, sigma=1/255, max_iterations=2000):
+def batch_patch_attack(images, applied_patch, mask, target_hash, model, hashbit, product_threshold, alpha=0.01, sigma=1/255, max_iterations=2000):
     new_shape = list(mask.shape)
     new_shape.insert(0, images.shape[0] )
     perturbated_images = torch.mul(mask.type(torch.FloatTensor), applied_patch.type(torch.FloatTensor)) + torch.mul(1 - mask.expand(new_shape ).type(torch.FloatTensor),  images.type(torch.FloatTensor))
@@ -167,7 +169,7 @@ def batch_patch_attack(images, applied_patch, mask, target_hash, model, product_
         if args['mean'] == 1:
             patch_grad = patch_grad.mean(dim=0)
         else:
-            patch_grad = grad_aggregation(patch_grads=patch_grad, all_product=all_product)
+            patch_grad = grad_aggregation(patch_grads=patch_grad, all_product=all_product, threshold=hashbit-2, hashbit)
 
         applied_patch = applied_patch.type(torch.FloatTensor) - torch.sign(patch_grad) * sigma
         applied_patch = clamp_patch(applied_patch)
@@ -323,7 +325,7 @@ if __name__ == '__main__':
             else:
                 applied_patch = applied_patch
             perturbated_images, this_patch, product, all_product = batch_patch_attack( image, applied_patch, mask, target_hash,
-                                                                     model, args['product_threshold'], args['alpha'], sigma,
+                                                                     model, args['hash_bit'] args['product_threshold'], args['alpha'], sigma,
                                                                      max_iterations=args['num_iteration'])
             patch = this_patch[:, x: x + patch.shape[1], y: y + patch.shape[2]]
             batch_patchs = torch.cat([batch_patchs, this_patch.unsqueeze(0)])
@@ -338,4 +340,3 @@ if __name__ == '__main__':
 
         if product >= (args['hash_bit'] - 0.8)  and mAP > 0.8:
             break
-
