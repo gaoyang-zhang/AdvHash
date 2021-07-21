@@ -1,5 +1,5 @@
 # AdvHash
-The implementation of my ACM MM 2021 paper "AdvHash: Set-to-set Targeted Attack on Deep Hashing with One Single Adversarial Patch".
+The implementation of my ACM MM 2021 our paper "AdvHash: Set-to-set Targeted Attack on Deep Hashing with One Single Adversarial Patch".
 
 ## Abstract
 
