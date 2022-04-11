@@ -1,5 +1,5 @@
 # AdvHash
-The implementation of our ACM MM 2021  paper "AdvHash: Set-to-set Targeted Attack on Deep Hashing with One Single Adversarial Patch".
+The implementation of our ACM MM 2021 paper "**AdvHash: Set-to-set Targeted Attack on Deep Hashing with One Single Adversarial Patch**" [[Paper](https://dl.acm.org/doi/pdf/10.1145/3474085.3475396)] [[Poster](images/mm1336-poster.pdf)].
 
 ## Abstract
 
@@ -7,15 +7,14 @@ The success of machine learning has brought great research progress for multimed
 
 In this paper, we propose AdvHash, the first targeted mismatch attack on deep hashing through adversarial patch. After superimposed with the same adversarial patch, any query image with a chosen label will retrieve a set of irrelevant images with the target label. Concretely, we first formulate a set-to-set problem, where a set of samples are pushed into a predefined clustered area in the Hamming space. Then we obtain a target anchor hash code and transform the attack to a set-to-point optimization. In order to generate a image-agnostic stable adversarial patch for a chosen label more efficiently, we propose a product-based weighted gradient aggregation strategy to dynamically adjust the gradient directions of the patch, by exploiting the Hamming distances between training samples and the target anchor hash code and assigning different weights to discriminatively aggregate gradients. Extensive experiments on benchmark datasets verify that AdvHash is highly effective at attacking two state-of-the-art deep hashing schemes.
 
-<img src="images/image-20210623184213934.png" />
+<img src="images/image-20210723225526925.png"/>
 
 ## Requirements
 
 - python 
 - torch==1.8.0
 - torchvision==0.9.0
-- tqdm
-- sklearn 
+
 
 ## Modules
 
@@ -34,7 +33,7 @@ In this paper, we propose AdvHash, the first targeted mismatch attack on deep ha
 - data_list.py : load images data from ```database.txt```, ```train.txt```and ```test.txt```.
 - patch_utils.py : some functions for patch process.
 - pre_process.py : data pre-process for images.
-- tools.py: necessary tools for training model and attacking model.
+- tools.py: necessary tools for training model and attack model.
 
 ## Train 
 
@@ -52,11 +51,10 @@ python HashNet.py
 
 Note that, you need to set the parameters in the ```get_config ``` function to specifically train the model you want. The trained models will be saved in the ```save```  directory, denoted as ```model.pt```,  along with the ```.npy``` files of hashcodes and labels w.r.t  images from database set and test set respectively.
 
-The ```xxx.txt ``` files in each subdirectory of ``` data ``` denote the image paths and labels for each dataset respectively. Please set the path for each image correctly ! !
+The ```xxx.txt ``` files in each subdirectory of ``` data ``` denote the image paths and labels for each dataset respectively. Remember to set the path for each image correctly 
 
 
-
-Thanks for the great implementation [DeepHash-PyTorch](https://github.com/swuxyj/DeepHash-pytorch), visit it more training details.
+Refer [DeepHash-PyTorch](https://github.com/swuxyj/DeepHash-pytorch) for more training details such as datasets downloads.
 
 ## Calculate the anchor codes
 
@@ -74,7 +72,7 @@ Run the following command:
 python patch_attack.py
 ```
 
-You can set the specific parameters with ```--xx```:
+Set the specific parameters with following:
 
 - gpu_id:  the gpu you want to load the model.
 - num_iteration: the number of iterations in each mini-batch training.
@@ -95,8 +93,15 @@ Run the following command to realize the attack from label 0 to label 1:
 python patch_attack.py --attack_which 1 --source_txt attack/source0.txt  --test_txt attack/test0.txt
 ```
 
-NOTE THAT : You need to set all images from source_txt and test_txt within the same label.
-
-
+## BibTex
+```tex
+@inproceedings{hu2021advhash,
+  title={AdvHash: Set-to-set Targeted Attack on Deep Hashing with One Single Adversarial Patch},
+  author={Hu, Shengshan and Zhang, Yechao and Liu, Xiaogeng and Zhang, Leo Yu and Li, Minghui and Jin, Hai},
+  booktitle={Proceedings of the 29th ACM International Conference on Multimedia},
+  pages={2335--2343},
+  year={2021}
+}
+```
 
 
